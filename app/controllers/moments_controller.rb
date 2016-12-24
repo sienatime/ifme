@@ -117,7 +117,7 @@ class MomentsController < ApplicationController
     end
 
     if @comment.save
-      result = generate_comment(@comment, 'moment')
+      result = CommentGenerator.new(@comment, 'moment', current_user).build
       respond_to do |format|
         format.html { render json: result }
         format.json { render json: result }

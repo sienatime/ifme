@@ -51,6 +51,9 @@ var onReadyAddComment = function() {
 					    		var commentid = 'comment_' + json.commentid;
 					    		var profile_picture = json.profile_picture;
 					    		var comment_info = json.comment_info;
+					    		var profile_name = json.profile_name;
+					    		var profile_path = json.profile_path;
+					    		var time_ago = json.time_ago;
 					    		var comment_text = json.comment_text;
 					    		var visibility = json.visibility;
 					    		var delete_comment = json.delete_comment;
@@ -71,7 +74,11 @@ var onReadyAddComment = function() {
 
 					    		newComment += '<div class="table_cell">';
 					    		newComment += '<div class="comment_info">';
-					    		newComment += comment_info;
+
+					    		newComment += '<a href="' + profile_path + '">';
+					    		newComment += profile_name;
+					    		newComment += '</a> - ' + time_ago;
+
 					    		newComment += '</div>';
 					    		newComment += '<div class="comment_text">';
 					    		newComment += comment_text;
@@ -82,8 +89,10 @@ var onReadyAddComment = function() {
 					    		newComment += '</div>';
 
 
-					    		if (delete_comment !== null && delete_comment.length > 0) {
-					    			newComment += delete_comment;
+					    		if (delete_comment) {
+					    			newComment += '<div class="table_cell delete_comment">';
+					    			newComment += '<a href="" id="' + delete_comment + '" class="delete_comment_button"><i class="fa fa-times"></i></a>';
+										newComment += '</div>'
 					    		}
 
 					    		newComment += '</div>';

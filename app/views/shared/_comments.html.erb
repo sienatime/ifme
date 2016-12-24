@@ -52,7 +52,7 @@
         current_user.id == local_assigns[:data].userid ||
         (!comment.viewers.blank? && comment.viewers.include?(current_user.id))
         )) %>
-        <% result = generate_comment(comment, comment.comment_type) %>
+        <% result = ::CommentGenerator.new(comment, comment.comment_type, current_user).build %>
         <% if local_assigns[:comments].first == comment %>
         <div class="comment no_margin_top" id=<%= 'comment_' + comment.id.to_s %>>
         <% else %>
@@ -65,7 +65,9 @@
               </div>
               <div class="table_cell">
                 <div class="comment_info">
-                  <%= raw result[:comment_info] %>
+                  <a href="<%= result[:profile_path] %>">
+                    <%= result[:profile_name] %>
+                  </a> - <%= result[:time_ago] %>
                 </div>
                 <div class="comment_text">
                   <%= raw result[:comment_text] %>
@@ -74,7 +76,12 @@
                   <%= raw result[:visibility] %>
                 </div>
               </div>
-              <%= raw result[:delete_comment] %>
+              <div class="table_cell delete_comment">
+              <%= link_to raw('<i class="fa fa-times"></i>'),
+                              '',
+                              id: "delete_comment_#{result[:delete_comment_]}",
+                              class: 'delete_comment_button' %>
+              </div>
             </div>
           </div>
         </div>

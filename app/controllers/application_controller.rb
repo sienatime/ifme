@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   helper_method :avatar_url, :is_viewer,
                 :are_allies, :get_uid, :most_focus,
                 :tag_usage, :can_notify, :if_not_signed_in,
-                :generate_comment, :get_stories, :moments_stats
+                :get_stories, :moments_stats
 
   def if_not_signed_in
     unless user_signed_in?
@@ -166,36 +166,6 @@ class ApplicationController < ActionController::Base
         end
       end
     end
-
-    return result
-  end
-
-  def generate_comment(data, data_type)
-    profile = User.find(data.comment_by)
-    profile_picture = ProfilePicture.fetch(profile.avatar.url, 'mini_profile_picture')
-
-    comment_info = link_to profile.name, profile_index_path(uid: get_uid(data.comment_by))
-    if !are_allies(current_user.id, data.comment_by) && current_user.id != data.comment_by
-      comment_info += ' ' + t('shared.comments.not_allies')
-    end
-    comment_info += ' - '
-    comment_info += TimeAgo.formatted_ago(data.created_at)
-
-    comment_text = raw(data.comment)
-
-    if data_type == 'moment'
-      visibility = CommentVisibility.new(data, Moment.find(data.commented_on), current_user).build
-    elsif data_type == 'strategy'
-      visibility = CommentVisibility.new(data, Strategy.find(data.commented_on), current_user).build
-    end
-
-    if (data_type == 'moment' && (Moment.where(id: data.commented_on, userid: current_user.id).exists? || data.comment_by == current_user.id)) || (data_type == 'strategy' && (Strategy.where(id: data.commented_on, userid: current_user.id).exists? || data.comment_by == current_user.id)) || (data_type == 'meeting' && (MeetingMember.where(meetingid: data.commented_on, userid: current_user.id, leader: true).exists? || data.comment_by == current_user.id))
-      delete_comment = '<div class="table_cell delete_comment">'
-      delete_comment += link_to raw('<i class="fa fa-times"></i>'), '', id: 'delete_comment_' + data.id.to_s, class: 'delete_comment_button'
-      delete_comment += '</div>'
-    end
-
-    result = { commentid: data.id, profile_picture: profile_picture, comment_info: comment_info, comment_text: comment_text, visibility: visibility, delete_comment: delete_comment, no_save: false }
 
     return result
   end

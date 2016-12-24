@@ -68,7 +68,7 @@ class MeetingsController < ApplicationController
     end
 
     if @comment.save
-      result = generate_comment(@comment, 'meeting')
+      result = CommentGenerator.new(@comment, 'meeting', current_user).build
       respond_to do |format|
         format.html { render json: result }
         format.json { render json: result }

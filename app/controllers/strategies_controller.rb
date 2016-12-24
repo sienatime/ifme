@@ -117,7 +117,7 @@ class StrategiesController < ApplicationController
     end
 
     if @comment.save
-      result = generate_comment(@comment, 'strategy')
+      result = CommentGenerator.new(@comment, 'strategy', current_user).build
       respond_to do |format|
         format.html { render json: result }
         format.json { render json: result }

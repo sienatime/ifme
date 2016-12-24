@@ -1,0 +1,3 @@
+describe CommentGenerator do
+
+end
